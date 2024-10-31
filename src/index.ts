@@ -10,7 +10,8 @@ app.use(express.json());
 
 // Routes
 app.get('/', (req: Request, res: Response) => {
-    res.send("Hello, world!");
+    const message = req.body.message
+    res.send({ message });
 });
 
 app.listen(port, () => console.log('Listening on port ' + port));
