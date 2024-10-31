@@ -4,19 +4,24 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"rimraf ./build && tsc",
-    "dev":"nodemon",
-    "start":"node build/index.js"
+    "build": "rimraf ./build && tsc",
+    "dev": "nodemon",
+    "start": "node build/index.js"
   },
   "keywords": [],
   "author": "Lucas L",
   "license": "ISC",
   "description": "food-commerce-backend",
   "devDependencies": {
+    "@types/express": "^5.0.0",
     "@types/node": "^22.8.5",
     "nodemon": "^3.1.7",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1"
   }
 }
