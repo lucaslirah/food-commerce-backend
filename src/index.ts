@@ -41,4 +41,20 @@ app.get("/snacks", async (req: Request, res: Response) => {
     res.send(snacks);
 });
 
+app.get("/orders/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    // buscar order com findUnique do prisma
+    const order = await prisma.order.findUnique({
+        where: {
+            id: +id,
+        },
+    });
+    
+    if (!order) {
+        res.status(404).json({ error: 'order not found' });
+        return;
+    }
+});
+
 app.listen(port, () => console.log('Listening on port ' + port));
