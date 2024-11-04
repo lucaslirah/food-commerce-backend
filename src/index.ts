@@ -2,6 +2,10 @@ import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import express, { Express, Request, Response } from 'express';
 
+import { SnackData } from './interfaces/SnackData'
+import { CustomerData } from './interfaces/CustomerData'
+import { PaymentData } from './interfaces/PaymentData'
+
 dotenv.config();
 
 const app: Express = express();
@@ -55,6 +59,18 @@ app.get("/orders/:id", async (req: Request, res: Response) => {
         res.status(404).json({ error: 'order not found' });
         return;
     }
+});
+
+interface CheckoutRequest extends Request {
+    body: {
+        cart: SnackData[];
+        customer: CustomerData;
+        payment: PaymentData;
+    }
+}
+
+app.get("checkout", async (req: CheckoutRequest, res:Response) => {
+    const { cart, customer, payment } = req.body;
 });
 
 app.listen(port, () => console.log('Listening on port ' + port));
