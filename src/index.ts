@@ -2,9 +2,11 @@ import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import express, { Express, Request, Response } from 'express';
 
-import { SnackData } from './interfaces/SnackData'
-import { CustomerData } from './interfaces/CustomerData'
-import { PaymentData } from './interfaces/PaymentData'
+import { SnackData } from './interfaces/SnackData';
+import { CustomerData } from './interfaces/CustomerData';
+import { PaymentData } from './interfaces/PaymentData';
+
+import CheckoutService from './services/CheckoutServices';
 
 dotenv.config();
 
@@ -69,8 +71,16 @@ interface CheckoutRequest extends Request {
     }
 }
 
-app.get("checkout", async (req: CheckoutRequest, res:Response) => {
+app.post("/checkout", async (req: CheckoutRequest, res:Response) => {
     const { cart, customer, payment } = req.body;
+
+    const checkoutService = new CheckoutService();
+    checkoutService.process(cart, customer, payment);
 });
 
 app.listen(port, () => console.log('Listening on port ' + port));
+
+// TODO: "puxar" os dados de snacks do BD
+// TODO: registrar os dados do cliente no BD
+// TODO: criar uma order
+// TODO: processar o pagamento
