@@ -76,6 +76,8 @@ app.post("/checkout", async (req: CheckoutRequest, res:Response) => {
 
     const checkoutService = new CheckoutService();
     checkoutService.process(cart, customer, payment);
+
+    res.send({ message: 'Order processed successfully' });
 });
 
 app.listen(port, () => console.log('Listening on port ' + port));
