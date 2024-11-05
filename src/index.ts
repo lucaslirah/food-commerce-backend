@@ -79,8 +79,3 @@ app.post("/checkout", async (req: CheckoutRequest, res:Response) => {
 });
 
 app.listen(port, () => console.log('Listening on port ' + port));
-
-// TODO: "puxar" os dados de snacks do BD
-// TODO: registrar os dados do cliente no BD
-// TODO: criar uma order
-// TODO: processar o pagamento
