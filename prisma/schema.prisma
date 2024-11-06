@@ -54,7 +54,7 @@ model Order {
   id            Int         @id @default(autoincrement())
   status        OrderStatus @default(PENDING)
   total         Decimal     @db.Decimal(10, 2)
-  transactionId String      @db.VarChar(255)
+  transactionId String?     @db.VarChar(255)
   customer      Customer    @relation(fields: [customerId], references: [id])
   customerId    Int
   orderItems    OrderItem[]

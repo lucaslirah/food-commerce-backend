@@ -1,4 +1,4 @@
-import { Customer, PrismaClient } from "@prisma/client";
+import { Customer, Order, PrismaClient } from "@prisma/client";
 import { CustomerData } from "../interfaces/CustomerData";
 import { PaymentData } from "../interfaces/PaymentData";
 import { SnackData } from "../interfaces/SnackData";
@@ -11,6 +11,7 @@ export default class CheckoutService {
     constructor() {
         this.prisma = new PrismaClient();
     }
+    
     // Implement the checkout logic here
     async process(
         cart: SnackData[],
@@ -32,14 +33,15 @@ export default class CheckoutService {
             quantity: cart.find((item) => item.id === snack.id)?.quantity!,
             subtotal: cart.find((item) => item.id === snack.id)?.quantity! * Number(snack.price),
         }));
-
-        console.log('snacksInCart', snacksInCart);
+        // console.log('snacksInCart', snacksInCart);
 
         // TODO: registrar os dados do cliente no BD
         const customerCreated = await this.createCustomer(customer);
-        console.log('customerCreated', customerCreated);
+        // console.log('customerCreated', customerCreated);
 
         // TODO: criar uma order
+        const orderCreated = await this.createOrder(snacksInCart, customerCreated);
+        console.log('orderCreated', orderCreated);
         // TODO: processar o pagamento
     }
 
@@ -51,5 +53,33 @@ export default class CheckoutService {
         })
 
         return customerCreated
+    }
+
+    private async createOrder(snacksInCart: SnackData[], customer: Customer): Promise<Order> {
+        const total = snacksInCart.reduce((acc, snack) => acc + snack.subtotal, 0);
+        
+        const orderCreated = await this.prisma.order.create({
+          data: {
+            total,
+            customer: {
+              connect: { id: customer.id },
+            },
+            orderItems: {
+              createMany: {
+                data: snacksInCart.map((snack) => ({
+                  snackId: snack.id,
+                  quantity: snack.quantity,
+                  subtotal: snack.subtotal,
+                })),
+              },
+            },
+          },
+          include: {
+            customer: true,
+            orderItems: { include: { snack: true } },
+          },
+        })
+
+        return orderCreated;
     }
 }

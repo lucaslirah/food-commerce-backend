@@ -55,12 +55,15 @@ app.get("/orders/:id", async (req: Request, res: Response) => {
         where: {
             id: +id,
         },
+        include: { customer: true, orderItems: { include: { snack: true } } },
     });
     
     if (!order) {
         res.status(404).json({ error: 'order not found' });
         return;
     }
+
+    res.send(order);
 });
 
 interface CheckoutRequest extends Request {
