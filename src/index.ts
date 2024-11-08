@@ -77,10 +77,11 @@ interface CheckoutRequest extends Request {
 app.post("/checkout", async (req: CheckoutRequest, res:Response) => {
     const { cart, customer, payment } = req.body;
 
-    const checkoutService = new CheckoutService();
-    checkoutService.process(cart, customer, payment);
+    const orderCreated = await new CheckoutService().process(
+        cart, customer, payment
+    );
 
-    res.send({ message: 'Order processed successfully' });
+    res.send(orderCreated);
 });
 
 app.listen(port, () => console.log('Listening on port ' + port));
