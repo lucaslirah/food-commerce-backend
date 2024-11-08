@@ -27,25 +27,21 @@ export default class CheckoutService {
                 },
             },
         });
-        // // console.log('snacks', snacks);
         const snacksInCart = snacks.map<SnackData>((snack) => ({
             ...snack,
             price: Number(snack.price),
             quantity: cart.find((item) => item.id === snack.id)?.quantity!,
             subtotal: cart.find((item) => item.id === snack.id)?.quantity! * Number(snack.price),
         }));
-        // console.log('snacksInCart', snacksInCart);
 
         // TODO: registrar os dados do cliente no BD
         const customerCreated = await this.createCustomer(customer);
-        // console.log('customerCreated', customerCreated);
 
         // TODO: criar uma order
         const orderCreated = await this.createOrder(snacksInCart, customerCreated);
-        // console.log('orderCreated', orderCreated);
         
         // TODO: processar o pagamento
-        const transaction = await new PaymentService().process(orderCreated, customerCreated, payment)
+        const transaction = await new PaymentService().process(orderCreated, customerCreated, payment);
     }
 
     private async createCustomer(customer: CustomerData) : Promise<Customer> {
@@ -55,7 +51,7 @@ export default class CheckoutService {
             create: customer,
         })
 
-        return customerCreated
+        return customerCreated;
     }
 
     private async createOrder(snacksInCart: SnackData[], customer: Customer): Promise<Order> {
