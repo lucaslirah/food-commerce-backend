@@ -8,7 +8,7 @@ export default class PaymentService {
         order: Order, 
         customer: Customer, 
         payment: PaymentData
-    ): Promise<{ transactionId: string; status: OrderStatus; }>{
+    ): Promise<{ transactionId: string; status: OrderStatus }>{
         try{
             // TODO: criar o customer
             const customerId = await this.createCustomer(customer);
@@ -65,17 +65,16 @@ export default class PaymentService {
     }> {
         const paymentParams = {
             customer: customerId,
-            billingType: "BOLETO",
-            value: order.total,
+            billingType: "CREDIT_CARD",
             dueDate: new Date().toISOString(),
+            value: order.total,
             description: `Pedido #${order.id}`,
-            daysAfterDueDateToRegistrationCancellation: 1,
             externalReference: order.id.toString(),
             creditCard: {
                 holderName: payment.creditCardHolderName,
                 number: payment.creditCardNumber,
-                expiryMonth: payment.creditCardExpirationDate.split('/')[0],
-                expiryYear: payment.creditCardExpirationDate.split('/')[1],
+                expiryMonth: payment.creditCardExpirationDate?.split('/')[0],
+                expiryYear: payment.creditCardExpirationDate?.split('/')[1],
                 ccv: payment.creditCardCVV
             },
             creditCardHolderInfo: {
@@ -89,7 +88,7 @@ export default class PaymentService {
             },
         }
 
-        const response = await api.post(`/payments`, paymentParams);
+        const response = await api.post("/payments", paymentParams);
 
         return {
             transactionId: response.data?.id,
