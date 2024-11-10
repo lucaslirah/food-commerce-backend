@@ -1,6 +1,7 @@
+import express, { Express, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
-import express, { Express, Request, Response } from 'express';
+import cors from 'cors';
 
 import { SnackData } from './interfaces/SnackData';
 import { CustomerData } from './interfaces/CustomerData';
@@ -15,6 +16,7 @@ const port = process.env.PORT || 5000;
 const prisma = new PrismaClient();
 
 app.use(express.json());
+app.use(cors());
 
 // Routes
 app.get("/", (req: Request, res: Response) => {
